@@ -15,7 +15,7 @@ RSpec.describe 'Garden Show' do
     @plant5 = Plant.create!(name: 'Green Apple', description: 'Tree', days_to_harvest: 120)
 
     @plot1.plants << [@plant1, @plant2]
-    @plot2.plants << [@plant2, @plant4]
+    @plot2.plants << [@plant2, @plant4, @plant5]
     @plot3.plants << [@plant3]
   end
   describe 'visitor' do
@@ -27,12 +27,9 @@ RSpec.describe 'Garden Show' do
       expect(page).to have_content(@plant4.name)
     end
 
-    it 'displays no duplicate plants' do
-      visit "/gardens/#{@garden1.id}"
-    end
-
     it 'displays only plants with less than 100 harvest days' do
       visit "/gardens/#{@garden1.id}"
+      expect(page).to_not have_content(@plant5.name)    
     end
   end
 end
