@@ -4,7 +4,12 @@
   <div id=<%= "#{plot.id}" %> >
     <h3>Plot Number: <%= plot.number %> </h3>
       <% plot.plants.each do |plant| %>
-      <p> <%= plant.name %> </p>
+        <div id=<%= "#{plant.id}" %> >
+          <p> <%= plant.name %> </p>
+          <%= form_with url:"plots/#{plot.id}/plants/#{plant.id}", method: :delete, local: true do |f| %>
+            <%= f.submit 'Delete Plant' %>
+          <% end %>
+        </div>
       <% end %>
   </div>
 <% end %>

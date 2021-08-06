@@ -37,5 +37,32 @@ RSpec.describe 'Plot Index' do
         expect(page).to have_content(@plant3.name)
       end
     end
+
+    it 'can remove a plant from a plot' do
+      visit '/plots'
+
+      within(:css, "##{@plot1.id}") do
+        expect(page).to have_content(@plant2.name)
+      end
+
+      within(:css, "##{@plot2.id}") do
+        expect(page).to have_content(@plant2.name)
+        expect(page).to have_content(@plant4.name)
+        within(:css, "##{@plant2.id}") do
+          click_on('Delete Plant')
+        end
+      end
+
+      expect(current_path).to eq('/plots')
+
+      within(:css, "##{@plot1.id}") do
+        expect(page).to have_content(@plant2.name)
+      end
+
+      within(:css, "##{@plot2.id}") do
+        expect(page).to_not have_content(@plant2.name)
+        expect(page).to have_content(@plant4.name)
+      end
+    end
   end
 end
