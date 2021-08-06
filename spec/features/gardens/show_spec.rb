@@ -4,9 +4,11 @@ RSpec.describe 'Garden Show' do
   before(:each) do
     @garden1 = Garden.create!(name: 'Sparkys Garden', organic: true)
     @garden2 = Garden.create!(name: 'Blues Garden', organic: true)
+    
     @plot1 = @garden1.plots.create!(number: 1, size: 'small', direction: 'North')
     @plot2 = @garden1.plots.create!(number: 4, size: 'large', direction: 'West')
     @plot3 = @garden2.plots.create!(number: 7, size: 'medium', direction: 'West')
+    @plot4 = @garden1.plots.create!(number: 10, size: 'medium', direction: 'West')
 
     @plant1 = Plant.create!(name: 'Tomato Girl', description: 'Prefers full sun', days_to_harvest: 80)
     @plant2 = Plant.create!(name: 'Purple Beet', description: 'Water', days_to_harvest: 90)
@@ -17,6 +19,7 @@ RSpec.describe 'Garden Show' do
     @plot1.plants << [@plant1, @plant2]
     @plot2.plants << [@plant2, @plant4, @plant5]
     @plot3.plants << [@plant3]
+    @plot4.plants << [@plant2, @plant1]
   end
   describe 'visitor' do
     it 'displays associated plants' do
@@ -29,7 +32,14 @@ RSpec.describe 'Garden Show' do
 
     it 'displays only plants with less than 100 harvest days' do
       visit "/gardens/#{@garden1.id}"
-      expect(page).to_not have_content(@plant5.name)    
+      expect(page).to_not have_content(@plant5.name)
+    end
+
+    it 'displays plants in order of most seedlings to least' do
+      visit "/gardens/#{@garden1.id}"
+
+      expect(@plant2.name).to appear_before(@plant1.name)
+      expect(@plant1.name).to appear_before(@plant4.name)
     end
   end
 end
